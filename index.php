@@ -38,9 +38,18 @@ class Api {
 					break;
 					
 					default:
+						if (array_key_exists('host', $_REQUEST) and array_key_exists('username', $_REQUEST) and array_key_exists('password', $_REQUEST)) {
+							# Connect to database
+							# if not error
+							# if so save it in config file
+							$data = $this->_helper->addMessage('Could not establish database connection.', 'error');
+						} else {
+							$data = $this->_helper->addMessage('No database connection found.', 'info');
+						}
+						
 						# on submit check credentionals
 						# OK: add db credentionals in config/database.ini & create database/tables
-						$this->_view->render('initialize_database');
+						$this->_view->render('initialize_database', $this->_helper, $data);
 					break;
 				}
 			break;

@@ -15,7 +15,7 @@
  	CONST VIEW = '404';
  	CONST FOOTER = 'footer';
 
- 	public function render($view, $header = false, $footer = false) {
+ 	public function render($view, Helper $helper, $data = array(), $header = false, $footer = false) {
  		$headerPath = $this->_setHeader($header);
  		$viewPath = $this->_setView($view);
  		$footerPath = $this->_setFooter($footer);

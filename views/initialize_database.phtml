@@ -1,1 +1,29 @@
-init
+<div class="container container-table">
+	<div class="row vertical-center-row">
+		<div class="text-center col-md-4 col-md-offset-4">
+			<?php $helper->renderMessages(); ?>
+			<div class="panel panel-info">
+				<div class="panel-heading">
+					<h3 class="panel-title">Initialize database connection</h3>
+				</div>
+				<div class="panel-body">
+				<form method="post">
+					<div class="form-group">
+						<label for="host">Host:</label>
+						<input type="text" class="form-control" id="host" name="host" placeholder="localhost">
+					</div>
+					<div class="form-group">
+						<label for="username">Username:</label>
+						<input type="text" class="form-control" id="username" name="username" placeholder="admin">
+					</div>
+					<div class="form-group">
+						<label for="password">Password:</label>
+						<input type="password" class="form-control" id="password" name="password" placeholder="XXXX">
+					</div>
+					<button type="submit" class="btn btn-default">Create database</button>
+				</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
