@@ -15,18 +15,16 @@ class Helper {
 		return (1 == 1 ? 'http' : 'api');
 	}
 
-	public function validDBConnection() {
+	public function validDBConnection(Database $database) {
 		$dbData = parse_ini_file('../config/database.ini');
 
 		if (!array_key_exists('username', $dbData) OR trim($dbData['username']) == ''
 			OR !array_key_exists('password', $dbData) OR trim($dbData['password']) == ''
-			OR !array_key_exists('host', $dbData) OR trim($dbData['host']) == '') {
+			OR !array_key_exists('hostname', $dbData) OR trim($dbData['hostname']) == '') {
 			return false;
 		}
 
-		// check connection and database!
-		// XXX TODO
-		return true;
+		return $database->try($dbData);
 	}
 
 	private function _createDefaultData() {

@@ -14,16 +14,22 @@ function my_autoloader($class) {
 
 spl_autoload_register('my_autoloader');
 
-new Api(new Helper, new View);
+new Api(
+	new Helper,
+	new View,
+	new Database
+);
 
 class Api {
 
 	private $_helper;
 	private $_view;
+	private $_database;
 
-	function __construct($helper, $view) {
+	function __construct($helper, $view, $database) {
 		$this->_helper = $helper;
 		$this->_view = $view;
+		$this->_database = $database;
 
 		$this->_runApplication();
 	}
@@ -31,24 +37,23 @@ class Api {
 	private function _runApplication() {
 		switch ($this->_helper->callType()) {
 			case 'http':
-				switch ($this->_helper->validDBConnection()) {
+				switch ($this->_helper->validDBConnection($this->_database)) {
 					case true:
-						# show login page
-						# or if logged in show other page
+						# go to login page or if logged in show other page
 					break;
 					
 					default:
-						if (array_key_exists('host', $_REQUEST) and array_key_exists('username', $_REQUEST) and array_key_exists('password', $_REQUEST)) {
-							# Connect to database
-							# if not error
-							# if so save it in config file
-							$data = $this->_helper->addMessage('Could not establish database connection.', 'error');
+						if (array_key_exists('hostname', $_REQUEST) and array_key_exists('username', $_REQUEST) and array_key_exists('password', $_REQUEST)) {
+							if ($this->_database->try($_REQUEST)) {
+								# if so save it in config file
+								# go to login page or if logged in show other page
+							} else {
+								$data = $this->_helper->addMessage('Could not establish database connection.', 'error');
+							}
 						} else {
 							$data = $this->_helper->addMessage('No database connection found.', 'info');
 						}
 						
-						# on submit check credentionals
-						# OK: add db credentionals in config/database.ini & create database/tables
 						$this->_view->render('initialize_database', $this->_helper, $data);
 					break;
 				}
