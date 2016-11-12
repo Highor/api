@@ -14,15 +14,21 @@ function my_autoloader($class) {
 
 spl_autoload_register('my_autoloader');
 
-new Api(new Helper);
+new Api(new Helper, new View);
 
 class Api {
 
 	private $_helper;
+	private $_view;
 
-	function __construct($helper) {
+	function __construct($helper, $view) {
 		$this->_helper = $helper;
+		$this->_view = $view;
 
+		$this->_runApplication();
+	}
+
+	private function _runApplication() {
 		switch ($this->_helper->callType()) {
 			case 'http':
 				switch ($this->_helper->validDBConnection()) {
@@ -34,7 +40,7 @@ class Api {
 					default:
 						# on submit check credentionals
 						# OK: add db credentionals in config/database.ini & create database/tables
-						var_dump("create database view");
+						$this->_view->render('initialize_database');
 					break;
 				}
 			break;
