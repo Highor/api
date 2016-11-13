@@ -21,6 +21,23 @@ class Helper {
 		exit;
 	}
 
+	public function validateCreateForm($data, Database $database) {
+		if (!array_key_exists('adminpassword', $data) OR !array_key_exists('adminrpassword', $data) OR trim($data['adminpassword']) == '' OR trim($data['adminrpassword']) == '') {
+			return $this->addMessage("Admin password must be filled in", 'error');
+		} else if (array_key_exists('adminpassword', $data) AND array_key_exists('adminrpassword', $data) AND trim($data['adminpassword']) != trim($data['adminrpassword'])) {
+			return $this->addMessage("Admin password did not match", 'error');
+		} else if (!array_key_exists('adminusername', $data) OR trim($data['adminusername']) == '') {
+			return $this->addMessage("Admin username is required", 'error');
+		} else if (array_key_exists('username', $data)) {
+			$response = $database->try($data);
+			if ($response !== true) {
+				return $this->addMessage($response, 'error');
+			}
+		}
+
+		return true;
+	}
+
 	public function saveDBConfig($data) {
 		$current = file_get_contents(self::DBFILE);
 		$current = "hostname=".$data['hostname']."\n";

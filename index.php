@@ -19,15 +19,7 @@ class Api {
 		$this->_view = $view;
 		$this->_database = $database;
 
-		switch ($_SERVER['REQUEST_URI']) {
-			case '/apps':
-				$this->_view->render('apps', $this->_helper);
-			break;
-			
-			default:
-				$this->_runApplication();
-			break;
-		}
+		$this->_runApplication();
 	}
 
 	private function _runApplication() {
@@ -36,18 +28,28 @@ class Api {
 				switch ($this->_helper->validDBConnection($this->_database)) {
 					case true:
 						$this->_database->initializeDB();
-						$this->_helper->redirect('apps');
+						switch ($_SERVER['REQUEST_URI']) {
+							case '/apps':
+								$this->_view->render('apps', $this->_helper);
+							break;
+
+							case '/login':
+								$this->_view->render('login', $this->_helper);
+							break;
+
+							default:
+								$this->_helper->redirect('login');
+							break;
+						}
 					break;
 					
 					default:
-						if (array_key_exists('hostname', $_REQUEST) and array_key_exists('username', $_REQUEST) and array_key_exists('password', $_REQUEST)) {
-							$response = $this->_database->try($_REQUEST);
-							if ($response === true) {
+						if (array_key_exists('username', $_REQUEST)) {
+							$data = $this->_helper->validateCreateForm($_REQUEST, $this->_database);
+							if ($data === true) {
 								$this->_helper->saveDBConfig($_REQUEST);
-								$this->_database->initializeDB();
-								$this->_helper->redirect('apps');
-							} else {
-								$data = $this->_helper->addMessage($response, 'error');
+								$this->_database->initializeDB($_REQUEST);
+								$this->_helper->redirect('login');
 							}
 						} else {
 							$data = $this->_helper->addMessage('No database connection found.', 'info');
@@ -70,7 +72,10 @@ error_reporting(E_ALL);
 ini_set("display_errors", 1);
 
 function my_autoloader($class) {
-    include 'classes/' . $class . '.class.php';
+	$classFile = 'classes/' . $class . '.class.php';
+	if (file_exists($classFile)) {
+		include 'classes/' . $class . '.class.php';
+	}
 }
 
 spl_autoload_register('my_autoloader');
