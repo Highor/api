@@ -35,6 +35,7 @@ class Api {
 			case 'http':
 				switch ($this->_helper->validDBConnection($this->_database)) {
 					case true:
+						$this->_database->initializeDB();
 						$this->_helper->redirect('apps');
 					break;
 					

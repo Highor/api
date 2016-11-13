@@ -9,6 +9,7 @@
 
 class Database {
 
+	CONST PATCHDIR = 'patches/sql/';
 	var $dbh;
 
 	public function try($data) {
@@ -26,6 +27,7 @@ class Database {
 		$sth->bindParam(':dbname', $dbname);
 		$sth->execute();
 		if ($sth->rowCount() == 0) {
+			# Patch database
 			$sth = $this->dbh->prepare('CREATE DATABASE api');
 			$sth->execute();
 		}
