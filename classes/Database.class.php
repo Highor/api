@@ -26,9 +26,11 @@ class Database {
 		$sth->bindParam(':id', $data['user_id']);
 		$sth->bindParam(':hash', $data['hash']);
 		$sth->execute();
+
 		if ($sth->rowCount() == 0) {
 			return false;
 		}
+		
 		return true;
 	}
 

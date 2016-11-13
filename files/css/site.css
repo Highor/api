@@ -8,3 +8,14 @@
 	display: table-cell;
 	vertical-align: middle;
 }
+
+button.addapp {
+	border: 1px solid #f1f0f0;
+	width: 250px;
+	height: 250px;
+	background-color: #f9f9f9;
+	color: #e4e1e1;
+	font-size: 30px;
+	float: left;
+	margin-right: 20px;
+}
