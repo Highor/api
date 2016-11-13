@@ -21,6 +21,28 @@ class Helper {
 		exit;
 	}
 
+	public function isLoggedIn(Database $database) {
+		session_start();
+		if (array_key_exists('login', $_SESSION) AND array_key_exists('user_id', $_SESSION['login']) AND array_key_exists('hash', $_SESSION['login']) AND is_numeric(trim($_SESSION['login']['user_id'])) AND trim($_SESSION['login']['hash']) != '') {
+			if ($database->checkCredentionals($_SESSION['login'])) {
+				return true;
+			}
+		}
+
+		session_destroy();
+		$this->redirect('login');
+	}
+
+	public function validateLogin($data, Database $database) {
+		if (!array_key_exists('adminusername', $data) OR !array_key_exists('adminpassword', $data) OR trim($data['adminusername']) == '' OR trim($data['adminpassword']) == '') {
+			return $this->addMessage("Username and Password is required", 'error');
+		} elseif ($database->login($data) === false) {
+			return $this->addMessage("Login is incorrect", 'error');
+		}
+
+		return true;
+	}
+
 	public function validateCreateForm($data, Database $database) {
 		if (!array_key_exists('adminpassword', $data) OR !array_key_exists('adminrpassword', $data) OR trim($data['adminpassword']) == '' OR trim($data['adminrpassword']) == '') {
 			return $this->addMessage("Admin password must be filled in", 'error');
@@ -78,7 +100,7 @@ class Helper {
 		return $this->data;
 	}
 
-	public function addMessage($message, $type) {
+	public function addMessage($message, $type = 'error') {
 		$this->data = $this->_createDefaultData();
 		$this->data['messages'][$type][] = $message;
 		return $this->data;

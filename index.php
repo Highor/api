@@ -30,11 +30,20 @@ class Api {
 						$this->_database->initializeDB();
 						switch ($_SERVER['REQUEST_URI']) {
 							case '/apps':
+								$this->_helper->isLoggedIn($this->_database);
 								$this->_view->render('apps', $this->_helper);
 							break;
 
 							case '/login':
-								$this->_view->render('login', $this->_helper);
+								$data = array();
+								if (array_key_exists('adminusername', $_REQUEST)) {
+									$data = $this->_helper->validateLogin($_REQUEST, $this->_database);
+									if ($data === true) {
+										$this->_helper->redirect('apps');
+									}
+								}
+
+								$this->_view->render('login', $this->_helper, $data);
 							break;
 
 							default:
