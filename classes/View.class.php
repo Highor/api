@@ -20,6 +20,10 @@
  		$viewPath = $this->_setView($view);
  		$footerPath = $this->_setFooter($footer);
 
+ 		if (strpos($viewPath, '404') !== false) {
+ 			header("HTTP/1.0 404 Not Found");
+ 		}
+
 		ob_start();
 		include($headerPath);
 		include($viewPath);

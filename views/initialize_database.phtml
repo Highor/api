@@ -10,11 +10,11 @@
 				<form method="post">
 					<div class="form-group">
 						<label for="hostname">Host:</label>
-						<input type="text" class="form-control" id="hostname" name="hostname" placeholder="localhost">
+						<input type="text" class="form-control" id="hostname" name="hostname" value="<?php echo $helper->getValue('hostname'); ?>" placeholder="localhost">
 					</div>
 					<div class="form-group">
 						<label for="username">Username:</label>
-						<input type="text" class="form-control" id="username" name="username" placeholder="admin">
+						<input type="text" class="form-control" id="username" name="username" value="<?php echo $helper->getValue('username'); ?>" placeholder="admin">
 					</div>
 					<div class="form-group">
 						<label for="password">Password:</label>

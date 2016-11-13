@@ -9,14 +9,29 @@
 
 class Helper {
 
-	private $data;
+	CONST DBFILE = 'config/database.ini';
+	private $data = array();
 
 	public function callType() {
 		return (1 == 1 ? 'http' : 'api');
 	}
 
+	public function redirect($to) {
+		header('Location: /'.$to);
+		exit;
+	}
+
+	public function saveDBConfig($data) {
+		$current = file_get_contents(self::DBFILE);
+		$current = "hostname=".$data['hostname']."\n";
+		$current .= "username=".$data['username']."\n";
+		$current .= "password=".$data['password']."\n";
+		$current .= "dbname=api";
+		file_put_contents(self::DBFILE, $current);
+	}
+
 	public function validDBConnection(Database $database) {
-		$dbData = parse_ini_file('../config/database.ini');
+		$dbData = parse_ini_file(self::DBFILE);
 
 		if (!array_key_exists('username', $dbData) OR trim($dbData['username']) == ''
 			OR !array_key_exists('password', $dbData) OR trim($dbData['password']) == ''
@@ -25,6 +40,13 @@ class Helper {
 		}
 
 		return $database->try($dbData);
+	}
+
+	public function getValue($value) {
+		if (array_key_exists($value, $_REQUEST)) {
+			return $_REQUEST[$value];
+		}
+		return '';
 	}
 
 	private function _createDefaultData() {

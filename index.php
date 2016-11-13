@@ -8,18 +8,6 @@
  *
  **/
 
-function my_autoloader($class) {
-    include 'classes/' . $class . '.class.php';
-}
-
-spl_autoload_register('my_autoloader');
-
-new Api(
-	new Helper,
-	new View,
-	new Database
-);
-
 class Api {
 
 	private $_helper;
@@ -31,7 +19,15 @@ class Api {
 		$this->_view = $view;
 		$this->_database = $database;
 
-		$this->_runApplication();
+		switch ($_SERVER['REQUEST_URI']) {
+			case '/apps':
+				$this->_view->render('apps', $this->_helper);
+			break;
+			
+			default:
+				$this->_runApplication();
+			break;
+		}
 	}
 
 	private function _runApplication() {
@@ -39,16 +35,18 @@ class Api {
 			case 'http':
 				switch ($this->_helper->validDBConnection($this->_database)) {
 					case true:
-						# go to login page or if logged in show other page
+						$this->_helper->redirect('apps');
 					break;
 					
 					default:
 						if (array_key_exists('hostname', $_REQUEST) and array_key_exists('username', $_REQUEST) and array_key_exists('password', $_REQUEST)) {
-							if ($this->_database->try($_REQUEST)) {
-								# if so save it in config file
-								# go to login page or if logged in show other page
+							$response = $this->_database->try($_REQUEST);
+							if ($response === true) {
+								$this->_helper->saveDBConfig($_REQUEST);
+								$this->_database->initializeDB();
+								$this->_helper->redirect('apps');
 							} else {
-								$data = $this->_helper->addMessage('Could not establish database connection.', 'error');
+								$data = $this->_helper->addMessage($response, 'error');
 							}
 						} else {
 							$data = $this->_helper->addMessage('No database connection found.', 'info');
@@ -66,3 +64,18 @@ class Api {
 	}
 
 }
+
+error_reporting(E_ALL);
+ini_set("display_errors", 1);
+
+function my_autoloader($class) {
+    include 'classes/' . $class . '.class.php';
+}
+
+spl_autoload_register('my_autoloader');
+
+new Api(
+	new Helper,
+	new View,
+	new Database
+);
