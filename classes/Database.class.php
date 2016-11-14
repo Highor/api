@@ -21,6 +21,32 @@ class Database {
 		}
 	}
 
+	public function getApps() {
+		$sth = $this->dbh->prepare("SELECT * FROM api.apps");
+		$sth->execute();
+		return $sth->fetchAll(PDO::FETCH_OBJ);
+	}
+
+	public function saveApp($data) {
+		$sth = $this->dbh->prepare("INSERT INTO api.apps (`name`, `key`) VALUES (:name, :key)");
+		$sth->bindParam(':name', $data['appname']);
+		$sth->bindParam(':key', $data['authkey']);
+		$sth->execute();
+	}
+
+	public function checkAppCredentionals($data) {
+		$sth = $this->dbh->prepare("SELECT id FROM api.apps WHERE `name` = :name OR `key` = :key");
+		$sth->bindParam(':name', $data['appname']);
+		$sth->bindParam(':key', $data['authkey']);
+		$sth->execute();
+
+		if ($sth->rowCount() == 0) {
+			return true;
+		}
+		
+		return false;
+	}
+
 	public function checkCredentionals($data) {
 		$sth = $this->dbh->prepare("SELECT id FROM api.login WHERE id = :id AND hash = :hash");
 		$sth->bindParam(':id', $data['user_id']);

@@ -19,3 +19,12 @@ CREATE TABLE api.login
 );
 
 INSERT INTO api.login (username, password) VALUES ('{username}', '{password}');
+
+CREATE TABLE api.apps
+(
+   id      INT(10) AUTO_INCREMENT NOT NULL,
+   name    VARCHAR(255) NOT NULL,
+   `key`   VARCHAR(255) NOT NULL,
+   PRIMARY KEY(id)
+);
+

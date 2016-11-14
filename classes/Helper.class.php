@@ -21,6 +21,18 @@ class Helper {
 		exit;
 	}
 
+	public function validateCreateAppForm($data, Database $database) {
+		if (!array_key_exists('appname', $data) OR !array_key_exists('authkey', $data) OR trim($data['appname']) == '' OR trim($data['authkey']) == '') {
+			return $this->addMessage("App name and basic authentication code is required", 'error');
+		} else if ($database->checkAppCredentionals($data) === false) {
+			return $this->addMessage("Make sure app name and basic authentication key does not exists", 'error');
+		} else if (preg_match('/^[a-zA-Z0-9]+$/', $data['appname']) == false) {
+			return $this->addMessage('Only letters and numbers are allowed in the app name', 'error');
+		}
+
+		return true;
+	}
+
 	public function isLoggedIn(Database $database) {
 		session_start();
 		if (array_key_exists('login', $_SESSION) AND array_key_exists('user_id', $_SESSION['login']) AND array_key_exists('hash', $_SESSION['login']) AND is_numeric(trim($_SESSION['login']['user_id'])) AND trim($_SESSION['login']['hash']) != '') {

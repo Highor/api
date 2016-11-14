@@ -31,7 +31,18 @@ class Api {
 						switch ($_SERVER['REQUEST_URI']) {
 							case '/apps':
 								$this->_helper->isLoggedIn($this->_database);
-								$this->_view->render('apps', $this->_helper);
+
+								$data = array();
+								if (array_key_exists('appname', $_REQUEST)) {
+									$data = $this->_helper->validateCreateAppForm($_REQUEST, $this->_database);
+									if ($data === true) {
+										$this->_database->saveApp($_REQUEST);
+										$this->_helper->redirect('apps/'.$_REQUEST['appname'].'/');
+									}
+								}
+
+								$data['apps'] = $this->_database->getApps();
+								$this->_view->render('apps', $this->_helper, $data);
 							break;
 
 							case '/login':

@@ -1,6 +1,60 @@
 <div class="container container-table">
 	<div class="row vertical-center-row">
-		<button type="button" class="addapp" onclick="location.href='/apps/xxx';">APP: xxx</button>
-		<button type="button" class="addapp">Create a new app +</button>
+		<?php foreach ($data['apps'] as $app): ?>
+			<button type="button" class="addapp" onclick="location.href='/apps/<?php echo $app->name; ?>/';">
+				APP: <?php echo $app->name; ?>
+				<br/><br/><span class="label label-danger" data-toggle="modal" data-target="#deleteApp">Remove</span>
+			</button>
+		<?php endforeach; ?>
+		<button type="button" class="addapp" data-toggle="modal" data-target="#createApp">Create a new app +</button>
+	</div>
+</div>
+
+<div class="modal fade" id="createApp" tabindex="-1" role="dialog" aria-labelledby="createAppLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<form method="post">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title" id="createAppLabel">Create a new app</h4>
+				</div>
+				<div class="modal-body">
+					<?php $helper->renderMessages(); ?>
+						<div class="form-group">
+							<label for="appname">Name:</label>
+							<input type="text" class="form-control" id="appname" name="appname" value="<?php echo $helper->getValue('appname'); ?>" placeholder="Only letters and numbers allowed">
+						</div>
+						<div class="form-group">
+							<label for="authkey">Basic authentication key:</label>
+							<input type="text" class="form-control" id="authkey" name="authkey" placeholder="<?php echo strtoupper(base64_encode(sha1('p$a@s#$HF24!dhA'.time()))); ?>">
+						</div>
+						<button type="button" id="appuseplaceholder" class="btn btn-default">Use placeholder</button>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					<button type="submit" class="btn btn-primary">Save app</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="createApp" tabindex="-1" role="dialog" aria-labelledby="createAppLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<form method="post">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title" id="deteAppLabel">Delete the app</h4>
+				</div>
+				<div class="modal-body">
+						Are you sure you want to delete this app?
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					<button type="submit" class="btn btn-primary">Delete app</button>
+				</div>
+			</form>
+		</div>
 	</div>
 </div>
