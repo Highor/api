@@ -29,6 +29,12 @@ class Api {
 					case true:
 						$this->_database->initializeDB();
 						switch ($_SERVER['REQUEST_URI']) {
+							case (preg_match('^\/apps\/[a-zA-Z0-9]+\/^', $_SERVER['REQUEST_URI']) ? true : false):
+								$data = array();
+								$data['app'] = $this->_database->getApp($_SERVER);
+								$this->_view->render('app', $this->_helper, $data);
+							break;
+
 							case '/apps':
 								$this->_helper->isLoggedIn($this->_database);
 
@@ -39,6 +45,10 @@ class Api {
 										$this->_database->saveApp($_REQUEST);
 										$this->_helper->redirect('apps/'.$_REQUEST['appname'].'/');
 									}
+								}
+
+								if (array_key_exists('deleteAppId', $_REQUEST)) {
+									$this->_database->deleteApp($_REQUEST);
 								}
 
 								$data['apps'] = $this->_database->getApps();

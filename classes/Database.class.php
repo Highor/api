@@ -21,6 +21,21 @@ class Database {
 		}
 	}
 
+	public function getApp($data) {
+		$sth = $this->dbh->prepare("SELECT * FROM api.apps WHERE name = :name");
+		$appName = str_replace('/apps/', '', $data['REQUEST_URI']);
+		$appName = str_replace('/', '', $appName);
+		$sth->bindParam(':name', $appName);
+		$sth->execute();
+		return $sth->fetch(PDO::FETCH_OBJ);
+	}
+
+	public function deleteApp($data) {
+		$sth = $this->dbh->prepare("DELETE FROM api.apps WHERE id = :id");
+		$sth->bindParam(':id', $data['deleteAppId']);
+		$sth->execute();
+	}
+
 	public function getApps() {
 		$sth = $this->dbh->prepare("SELECT * FROM api.apps");
 		$sth->execute();
