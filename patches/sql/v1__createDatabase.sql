@@ -24,7 +24,8 @@ CREATE TABLE api.apps
 (
    id      INT(10) AUTO_INCREMENT NOT NULL,
    name    VARCHAR(255) NOT NULL,
-   `key`   VARCHAR(255) NOT NULL,
+   `basic_user`  VARCHAR(255) NOT NULL,
+   `basic_key`   VARCHAR(255) NOT NULL,
    PRIMARY KEY(id)
 );
 

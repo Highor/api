@@ -30,7 +30,8 @@
 							<input type="text" class="form-control" id="appname" name="appname" value="<?php echo $helper->getValue('appname'); ?>" placeholder="Only letters and numbers allowed">
 						</div>
 						<div class="form-group">
-							<label for="authkey">Basic authentication key:</label>
+							<label for="authuser">Basic authentication:</label>
+							<input type="text" class="form-control" id="authuser" name="authuser" placeholder="username"><br/>
 							<input type="text" class="form-control" id="authkey" name="authkey" placeholder="<?php echo strtoupper(base64_encode(sha1('p$a@s#$HF24!dhA'.time()))); ?>">
 						</div>
 						<button type="button" id="appuseplaceholder" class="btn btn-default">Use placeholder</button>

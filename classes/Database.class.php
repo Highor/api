@@ -43,16 +43,17 @@ class Database {
 	}
 
 	public function saveApp($data) {
-		$sth = $this->dbh->prepare("INSERT INTO api.apps (`name`, `key`) VALUES (:name, :key)");
+		$sth = $this->dbh->prepare("INSERT INTO api.apps (`name`, `basic_user`, `basic_key`) VALUES (:name, :basic_user, :basic_key)");
 		$sth->bindParam(':name', $data['appname']);
-		$sth->bindParam(':key', $data['authkey']);
+		$sth->bindParam(':basic_user', $data['authuser']);
+		$sth->bindParam(':basic_key', $data['authkey']);
 		$sth->execute();
 	}
 
 	public function checkAppCredentionals($data) {
-		$sth = $this->dbh->prepare("SELECT id FROM api.apps WHERE `name` = :name OR `key` = :key");
+		$sth = $this->dbh->prepare("SELECT id FROM api.apps WHERE `name` = :name OR `basic_key` = :basic_key");
 		$sth->bindParam(':name', $data['appname']);
-		$sth->bindParam(':key', $data['authkey']);
+		$sth->bindParam(':basic_key', $data['authkey']);
 		$sth->execute();
 
 		if ($sth->rowCount() == 0) {

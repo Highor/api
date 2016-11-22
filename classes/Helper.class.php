@@ -29,10 +29,10 @@ class Helper {
 	}
 
 	public function validateCreateAppForm($data, Database $database) {
-		if (!array_key_exists('appname', $data) OR !array_key_exists('authkey', $data) OR trim($data['appname']) == '' OR trim($data['authkey']) == '') {
-			return $this->addMessage("App name and basic authentication code is required", 'error');
+		if (!array_key_exists('appname', $data) OR !array_key_exists('authkey', $data) OR !array_key_exists('authuser', $data) OR trim($data['authuser']) == '' OR trim($data['appname']) == '' OR trim($data['authkey']) == '') {
+			return $this->addMessage("App name and basic authentication login is required", 'error');
 		} else if ($database->checkAppCredentionals($data) === false) {
-			return $this->addMessage("Make sure app name and basic authentication key does not exists", 'error');
+			return $this->addMessage("Make sure app name and basic authentication password does not exists", 'error');
 		} else if (preg_match('/^[a-zA-Z0-9]+$/', $data['appname']) == false) {
 			return $this->addMessage('Only letters and numbers are allowed in the app name', 'error');
 		}
