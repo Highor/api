@@ -21,6 +21,13 @@ class Helper {
 		exit;
 	}
 
+	public function logout() {
+		session_start();
+		unset($_SESSION);
+		session_destroy();
+		$this->redirect('login');
+	}
+
 	public function validateCreateAppForm($data, Database $database) {
 		if (!array_key_exists('appname', $data) OR !array_key_exists('authkey', $data) OR trim($data['appname']) == '' OR trim($data['authkey']) == '') {
 			return $this->addMessage("App name and basic authentication code is required", 'error');

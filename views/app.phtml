@@ -1,10 +1,25 @@
 <div class="row">
 	<div class="col-xs-6 col-md-2 left">
-		
+		<div class="menu">
+			<div class="menu-item seperator" onclick="location.href='/apps';">Apps</div>
+			<div class="menu-item seperator" onclick="location.href='/apps/<?php echo $data['app']->name; ?>/';">Dashboard</div>
+			<div class="menu-item" onclick="location.href='/logout';">Logout</div>
+		</div>
 	</div>
 	<div class="container container-table">
 		<div class="row right">
-			<div class="newWell"><?php echo $_SERVER['REQUEST_URI']; ?> <span class="text-right"><strong>Basic authentication key:</strong> <?php echo $data['app']->key; ?> <input class="btn btn-default authCopy" type="button" value="Copy"></span></div>
+			<div class="newWell">
+				<?php echo $_SERVER['REQUEST_URI']; ?>
+				<select name="version">
+					<option name="new">New</option>
+					<option name="v1" selected="">v1</option>
+				</select>
+				<span class="text-right">
+					<strong>Basic authentication key:</strong>
+					<span class="copyKey"><?php echo $data['app']->key; ?></span>
+					<input class="btn btn-default authCopy" type="button" value="Copy">
+				</span>
+			</div>
 		</div>
 	</div>
 </div>

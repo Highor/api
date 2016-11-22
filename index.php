@@ -30,9 +30,15 @@ class Api {
 						$this->_database->initializeDB();
 						switch ($_SERVER['REQUEST_URI']) {
 							case (preg_match('^\/apps\/[a-zA-Z0-9]+\/^', $_SERVER['REQUEST_URI']) ? true : false):
+								$this->_helper->isLoggedIn($this->_database);
+
 								$data = array();
 								$data['app'] = $this->_database->getApp($_SERVER);
 								$this->_view->render('app', $this->_helper, $data);
+							break;
+
+							case '/logout':
+								$this->_helper->logout();
 							break;
 
 							case '/apps':

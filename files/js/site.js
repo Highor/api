@@ -13,4 +13,9 @@ $(document).ready(function() {
 		$('input[name="deleteAppId"]').val($(this).parent().find('input[name="appId"]').val());
 	});
 
+	$('.authCopy').click(function() {
+		var text = $('.copyKey').text();
+		window.prompt("Copy to clipboard: Ctrl+C, Enter", text);
+	});
+
 });

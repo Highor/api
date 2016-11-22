@@ -60,3 +60,16 @@ span.text-right {
 	margin-top: -7px;
     margin-left: 10px;
 }
+
+.menu {
+	padding: 30px;
+}
+
+.menu-item {
+	padding: 5px;
+	cursor: pointer;
+}
+
+.seperator {
+	border-bottom: 1px solid #f5f5f5;
+}
