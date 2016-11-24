@@ -33,7 +33,16 @@ class Api {
 								$this->_helper->isLoggedIn($this->_database);
 
 								$data = array();
+
+								if (array_key_exists('apiurl', $_REQUEST)) {
+									$data = $this->_helper->validateCreateAPICall($_REQUEST, $this->_database);
+									if ($data === true) {
+										$data = $this->_database->saveApiCall($_REQUEST, $this->_helper);
+									}
+								}
+
 								$data['app'] = $this->_database->getApp($_SERVER);
+								$data['calls'] = $this->_database->getAppCalls($_SERVER);
 								$this->_view->render('app', $this->_helper, $data);
 							break;
 
@@ -97,7 +106,16 @@ class Api {
 			break;
 			
 			default:
-				# api call
+				$data = array();
+				$data['code'] = 403;
+				$data['response'] = 'Forbidden';
+				$data['data'] = array();
+
+				// check basic auth with $_SERVER
+				// check if api url exists else 404
+				// send api request to file
+
+				$this->_view->render('api/403', $this->_helper, $data, false, false);
 			break;
 		}
 	}

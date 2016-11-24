@@ -15,19 +15,27 @@
  	CONST VIEW = '404';
  	CONST FOOTER = 'footer';
 
- 	public function render($view, Helper $helper, $data = array(), $header = false, $footer = false) {
- 		$headerPath = $this->_setHeader($header);
+ 	public function render($view, Helper $helper, $data = array(), $api = false, $header = false, $footer = false) {
+ 		if ($api !== false) {
+ 			$headerPath = $this->_setHeader($header);
+ 		}
  		$viewPath = $this->_setView($view);
- 		$footerPath = $this->_setFooter($footer);
+ 		if ($api !== false) {
+	 		$footerPath = $this->_setFooter($footer);
+	 	}
 
  		if (strpos($viewPath, '404') !== false) {
  			header("HTTP/1.0 404 Not Found");
  		}
 
 		ob_start();
-		include($headerPath);
+		if ($api !== false) {
+			include($headerPath);
+		}
 		include($viewPath);
-		include($footerPath);
+		if ($api !== false) {
+			include($footerPath);
+		}
 		$content = ob_get_contents();
 		ob_end_clean();
 		echo $content;

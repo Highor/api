@@ -18,4 +18,33 @@ $(document).ready(function() {
 		window.prompt("Copy to clipboard: Ctrl+C, Enter", text);
 	});
 
+	$('.tryAPI').click(function() {
+		var prefixurl = $(this).parent().parent().find('input[name="prefixurl"]').val();
+		var version = $('body').find('select[name="version"]').val();
+		var apiUrl = $(this).parent().parent().find('input[name="apiurl"]').val();
+		var fullApiUrl = prefixurl + version + '/' + apiUrl;
+		var apiType = $(this).parent().parent().find('select[name="apitype"]').val();
+		var username = $('input[name="basic_user"]').val();
+		var password = $('input[name="basic_pass"]').val();
+		console.log(username);
+		console.log(password);
+		var request = $.ajax({
+			url: fullApiUrl,
+			beforeSend: function( xhr ) {
+				xhr.setRequestHeader("Authorization", "Basic " + btoa(username + ":" + password));
+			},
+			method: apiType,
+			data: {},
+			dataType: "json"
+		});
+
+		request.done(function( msg ) {
+			console.log(msg);
+		});
+
+		request.fail(function( jqXHR, textStatus ) {
+			console.log( "Request failed: " + textStatus );
+		});
+	});
+
 });

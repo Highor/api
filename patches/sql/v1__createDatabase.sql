@@ -29,3 +29,12 @@ CREATE TABLE api.apps
    PRIMARY KEY(id)
 );
 
+CREATE TABLE api.calls
+(
+   id       INT(10) AUTO_INCREMENT NOT NULL,
+   app_id   INT(10) NOT NULL,
+   url      VARCHAR(255) NOT NULL,
+   file     VARCHAR(255) NOT NULL,
+   type     VARCHAR(255) NOT NULL
+   PRIMARY KEY(id)
+)

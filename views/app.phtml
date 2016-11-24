@@ -20,27 +20,51 @@
 					<span><?php echo $data['app']->basic_user; ?> / </span>
 					<span class="copyKey"><?php echo $data['app']->basic_key; ?></span>
 					<input class="btn btn-default authCopy" type="button" value="Copy">
+					<input type="hidden" name="basic_user" value="<?php echo $data['app']->basic_user; ?>">
+					<input type="hidden" name="basic_pass" value="<?php echo $data['app']->basic_key; ?>">
 				</span>
 			</div>
 			<br/>
+			<?php $helper->renderMessages(); ?>
+			<form action="" method="post">
+				<div class="api-well">
+					<div class="form-inline">
+						<div class="form-group">
+							<input type="hidden" class="form-control" name="prefixurl" value="<?php echo stripos($_SERVER['SERVER_PROTOCOL'],'https') === true ? 'https://' : 'http://'; ?><?php echo $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']; ?>">
+							<input type="text" class="form-control" name="apiurl" id="" placeholder="users/all" value="<?php echo $helper->getValue('apiurl'); ?>">
+						</div>
+						<div class="form-group">
+							<select name="apitype" class="form-control">
+								<option value="GET" <?php echo ($helper->getValue('apitype') == 'GET') ? 'selected' : '' ?>>GET</option>
+								<option value="POST" <?php echo ($helper->getValue('apitype') == 'POST') ? 'selected' : '' ?>>POST</option>
+								<option value="DELETE" <?php echo ($helper->getValue('apitype') == 'DELETE') ? 'selected' : '' ?>>DELETE</option>
+								<option value="PUT" <?php echo ($helper->getValue('apitype') == 'PUT') ? 'selected' : '' ?>>PUT</option>
+							</select>
+						</div>
+						<button type="button" class="tryAPI btn btn-default">Try</button>
+					</div>
+					<br/>
+					<input type="text" name="apifile" class="form-control" id="" placeholder="/var/www/apps/test/v1/users/" value="<?php echo $helper->getValue('apifile'); ?>">
+					<br/>
+					<input type="hidden" name="app_id" value="<?php echo $data['app']->id; ?>" />
+					<button type="submit" class="btn btn-default">Save</button>
+				</div>
+			</form>
+			<?php foreach ($data['calls'] as $call): ?>
 			<div class="api-well">
 				<div class="form-inline">
 					<div class="form-group">
-						<input type="text" class="form-control" id="" placeholder="users/all">
+						<?php echo $call->url; ?>
 					</div>
 					<div class="form-group">
-						<select class="form-control">
-							<option>GET</option>
-							<option>POST</option>
-							<option>DELETE</option>
-							<option>PUT</option>
-						</select>
+						<?php echo $call->type; ?>
 					</div>
-					<button type="submit" class="btn btn-default">Try</button>
+					<button type="button" class="tryAPI btn btn-default">Try</button>
 				</div>
 				<br/>
-				<input type="text" class="form-control" id="" placeholder="/var/www/apps/test/v1/users/">
+				<?php echo $call->file; ?>
 			</div>
+			<?php endforeach; ?>
 		</div>
 	</div>
 </div>

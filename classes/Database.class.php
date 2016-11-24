@@ -21,13 +21,55 @@ class Database {
 		}
 	}
 
+	public function saveApiCall($data, Helper $helper) {
+		$sth = $this->dbh->prepare("INSERT INTO api.calls (`app_id`, `url`, `file`, `type`) VALUES (:app_id, :url, :file, :type)");
+		$sth->bindParam(':app_id', $data['app_id']);
+		$sth->bindParam(':url', $data['apiurl']);
+		$sth->bindParam(':file', $data['apifile']);
+		$sth->bindParam(':type', $data['apitype']);
+		$sth->execute();
+
+		return $helper->addMessage('Succesfully added API call', 'success');
+	}
+
+	public function checkAPIUrl($data) {
+		$sth = $this->dbh->prepare("SELECT id FROM api.calls WHERE `url` = :url");
+		$sth->bindParam(':url', $data['apiurl']);
+		$sth->execute();
+
+		if ($sth->rowCount() == 0) {
+			return true;
+		}
+		
+		return false;
+	}
+
 	public function getApp($data) {
+		$sth = $this->dbh->prepare("SELECT * FROM api.apps WHERE id = :id");
+		$appID = $this->_getAppIDByName($data['REQUEST_URI']);
+		$sth->bindParam(':id', $appID);
+		$sth->execute();
+		return $sth->fetch(PDO::FETCH_OBJ);
+	}
+
+	private function _getAppIDByName($name) {
 		$sth = $this->dbh->prepare("SELECT * FROM api.apps WHERE name = :name");
-		$appName = str_replace('/apps/', '', $data['REQUEST_URI']);
+		$appName = str_replace('/apps/', '', $name);
 		$appName = str_replace('/', '', $appName);
 		$sth->bindParam(':name', $appName);
 		$sth->execute();
-		return $sth->fetch(PDO::FETCH_OBJ);
+		$result = $sth->fetch(PDO::FETCH_OBJ);
+
+		return $result->id;
+	}
+
+	public function getAppCalls($data) {
+		$sth = $this->dbh->prepare("SELECT * FROM api.calls WHERE app_id = :app_id");
+		$appID = $this->_getAppIDByName($data['REQUEST_URI']);
+		$sth->bindParam(':app_id', $appID);
+		$sth->execute();
+		return $sth->fetchAll(PDO::FETCH_OBJ);
+
 	}
 
 	public function deleteApp($data) {

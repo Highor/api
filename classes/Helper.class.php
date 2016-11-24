@@ -13,7 +13,10 @@ class Helper {
 	private $data = array();
 
 	public function callType() {
-		return (1 == 1 ? 'http' : 'api');
+		if (preg_match('^\/v[0-9]{1,6}\/^', $_SERVER['REQUEST_URI'])) {
+			return 'api';
+		}
+		return 'http';
 	}
 
 	public function redirect($to) {
@@ -26,6 +29,20 @@ class Helper {
 		unset($_SESSION);
 		session_destroy();
 		$this->redirect('login');
+	}
+
+	public function validateCreateAPICall($data, Database $database) {
+		if (!array_key_exists('apiurl', $data) OR trim($data['apiurl']) == '' OR !array_key_exists('apitype', $data) OR trim($data['apitype']) == '' OR !array_key_exists('apifile', $data) OR trim($data['apifile']) == '') {
+			return $this->addMessage('All fields are required','error');
+		} else if (!file_exists($data['apifile'])) {
+			return $this->addMessage('File does not exist: '.$data['apifile'],'info');
+		} else if ($database->checkAPIUrl($data) === false) {
+			return $this->addMessage('Api url already exists', 'error');
+		} else if (preg_match('/^[a-zA-Z0-9\/]+$/', $data['apiurl']) == false) {
+			return $this->addMessage('Only letters, numbers and slashes are allowed in the api url', 'error');
+		}
+
+		return true;
 	}
 
 	public function validateCreateAppForm($data, Database $database) {
