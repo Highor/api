@@ -21,27 +21,77 @@ class Database {
 		}
 	}
 
+	public function validateBasicAuth($data) {
+		if (array_key_exists('PHP_AUTH_USER', $_SERVER) AND array_key_exists('PHP_AUTH_PW', $_SERVER) AND trim($_SERVER['PHP_AUTH_USER']) != '' AND trim($_SERVER['PHP_AUTH_PW']) != '') {
+			$appID = $this->_getAppIDByName($_SERVER['REQUEST_URI'], 'api');
+			if ($appID !== false) {
+				$basicUser = $_SERVER['PHP_AUTH_USER'];
+				$basicKey = $_SERVER['PHP_AUTH_PW'];
+
+				$sth = $this->dbh->prepare("SELECT id FROM api.apps WHERE `id` = :id AND basic_user = :basic_user AND basic_key = :basic_key");
+				$sth->bindParam(':id', $appID);
+				$sth->bindParam(':basic_user', $basicUser);
+				$sth->bindParam(':basic_key', $basicKey);
+				$sth->execute();
+
+				if ($sth->rowCount() > 0) {
+					return true;
+				}
+			}
+		}
+		
+		return false;
+	}
+
 	public function saveApiCall($data, Helper $helper) {
-		$sth = $this->dbh->prepare("INSERT INTO api.calls (`app_id`, `url`, `file`, `type`) VALUES (:app_id, :url, :file, :type)");
+		$sth = $this->dbh->prepare("INSERT INTO api.calls (`app_id`, `url`, `file`, `type`, `version`) VALUES (:app_id, :url, :file, :type, :version)");
 		$sth->bindParam(':app_id', $data['app_id']);
 		$sth->bindParam(':url', $data['apiurl']);
 		$sth->bindParam(':file', $data['apifile']);
 		$sth->bindParam(':type', $data['apitype']);
+		$sth->bindParam(':version', $data['apiversion']);
 		$sth->execute();
 
 		return $helper->addMessage('Succesfully added API call', 'success');
 	}
 
-	public function checkAPIUrl($data) {
-		$sth = $this->dbh->prepare("SELECT id FROM api.calls WHERE `url` = :url");
-		$sth->bindParam(':url', $data['apiurl']);
-		$sth->execute();
+	public function checkAPIUrl($data, $type = 'http') {
+		if ($type == 'http') {
+			$sth = $this->dbh->prepare("SELECT id FROM api.calls WHERE `app_id` = :app_id AND `url` = :url AND version = :version");
+			$sth->bindParam(':url', $data['apiurl']);
+			$sth->bindParam(':version', $data['apiversion']);
+			$sth->bindParam(':app_id', $data['app_id']);
 
-		if ($sth->rowCount() == 0) {
+			$sth->execute();
+
+			if ($sth->rowCount() == 0) {
+				return true;
+			}
+			
+			return false;
+		} else {
+			$sth = $this->dbh->prepare("SELECT id FROM api.calls WHERE `app_id` = :app_id AND url = :url AND version = :version");
+			
+			$appID = $this->_getAppIDByName($data['REQUEST_URI'], 'api');
+			$data = array_values(array_filter(explode('/', $data['REQUEST_URI'])));
+			if ($appID === false OR !array_key_exists(1, $data) OR !array_key_exists(2, $data)) {
+				return false;
+			}
+			$apiUrl = $data[2].'/';
+			$version = $data[1];
+
+			$sth->bindParam(':app_id', $appID);
+			$sth->bindParam(':url', $apiUrl);
+			$sth->bindParam(':version', $version);
+
+			$sth->execute();
+
+			if ($sth->rowCount() == 0) {
+				return false;
+			}
+			
 			return true;
 		}
-		
-		return false;
 	}
 
 	public function getApp($data) {
@@ -52,13 +102,22 @@ class Database {
 		return $sth->fetch(PDO::FETCH_OBJ);
 	}
 
-	private function _getAppIDByName($name) {
+	private function _getAppIDByName($name, $type = 'http') {
+		$data = array_values(array_filter(explode('/', $name)));
+		if ($type == 'http') {
+			$appName = $data[1];
+		} else {
+			$appName = $data[0];
+		}
+
 		$sth = $this->dbh->prepare("SELECT * FROM api.apps WHERE name = :name");
-		$appName = str_replace('/apps/', '', $name);
-		$appName = str_replace('/', '', $appName);
 		$sth->bindParam(':name', $appName);
 		$sth->execute();
 		$result = $sth->fetch(PDO::FETCH_OBJ);
+
+		if ($sth->rowCount() == 0) {
+			return false;
+		}
 
 		return $result->id;
 	}

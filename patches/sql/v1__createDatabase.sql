@@ -35,6 +35,7 @@ CREATE TABLE api.calls
    app_id   INT(10) NOT NULL,
    url      VARCHAR(255) NOT NULL,
    file     VARCHAR(255) NOT NULL,
-   type     VARCHAR(255) NOT NULL
+   type     VARCHAR(255) NOT NULL,
+   version  VARCHAR(255) NOT NULL
    PRIMARY KEY(id)
 )

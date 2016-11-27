@@ -13,11 +13,13 @@ class Api {
 	private $_helper;
 	private $_view;
 	private $_database;
+	private $_service;
 
-	function __construct($helper, $view, $database) {
+	function __construct(Helper $helper, View $view, Database $database, Service $service) {
 		$this->_helper = $helper;
 		$this->_view = $view;
 		$this->_database = $database;
+		$this->_service = $service;
 
 		$this->_runApplication();
 	}
@@ -106,16 +108,14 @@ class Api {
 			break;
 			
 			default:
-				$data = array();
-				$data['code'] = 403;
-				$data['response'] = 'Forbidden';
-				$data['data'] = array();
-
-				// check basic auth with $_SERVER
-				// check if api url exists else 404
-				// send api request to file
-
-				$this->_view->render('api/403', $this->_helper, $data, false, false);
+				// Validate API URL & Auth
+				$this->_helper->validDBConnection($this->_database);
+				$data = $this->_service->validateCall($this->_database);
+				if ($data['tpl'] != '') {
+					$this->_view->render('api/'.$data['tpl'], $this->_helper, $data, true, false);
+				}
+				
+				
 			break;
 		}
 	}
@@ -137,5 +137,6 @@ spl_autoload_register('my_autoloader');
 new Api(
 	new Helper,
 	new View,
-	new Database
+	new Database,
+	new Service
 );

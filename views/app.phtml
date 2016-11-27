@@ -8,25 +8,25 @@
 	</div>
 	<div class="container container-table">
 		<div class="row right">
-			<div class="newWell">
-				<?php echo $_SERVER['REQUEST_URI']; ?>
-				<select name="version">
-					<option name="new">New</option>
-					<option name="v1" selected="">v1</option>
-				</select>
-				/
-				<span class="text-right">
-					<strong>Basic authentication:</strong>
-					<span><?php echo $data['app']->basic_user; ?> / </span>
-					<span class="copyKey"><?php echo $data['app']->basic_key; ?></span>
-					<input class="btn btn-default authCopy" type="button" value="Copy">
-					<input type="hidden" name="basic_user" value="<?php echo $data['app']->basic_user; ?>">
-					<input type="hidden" name="basic_pass" value="<?php echo $data['app']->basic_key; ?>">
-				</span>
-			</div>
-			<br/>
-			<?php $helper->renderMessages(); ?>
 			<form action="" method="post">
+				<div class="newWell">
+					<?php echo $_SERVER['REQUEST_URI']; ?>
+					<select name="apiversion">
+						<option name="new">New</option>
+						<option name="v1" selected="">v1</option>
+					</select>
+					/
+					<span class="text-right">
+						<strong>Basic authentication:</strong>
+						<span><?php echo $data['app']->basic_user; ?> / </span>
+						<span class="copyKey"><?php echo $data['app']->basic_key; ?></span>
+						<input class="btn btn-default authCopy" type="button" value="Copy">
+						<input type="hidden" name="basic_user" value="<?php echo $data['app']->basic_user; ?>">
+						<input type="hidden" name="basic_pass" value="<?php echo $data['app']->basic_key; ?>">
+					</span>
+				</div>
+				<br/>
+				<?php $helper->renderMessages(); ?>
 				<div class="api-well">
 					<div class="form-inline">
 						<div class="form-group">

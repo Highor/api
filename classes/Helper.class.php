@@ -37,7 +37,7 @@ class Helper {
 		} else if (!file_exists($data['apifile'])) {
 			return $this->addMessage('File does not exist: '.$data['apifile'],'info');
 		} else if ($database->checkAPIUrl($data) === false) {
-			return $this->addMessage('Api url already exists', 'error');
+			return $this->addMessage('Api url already exists for this app and version number', 'error');
 		} else if (preg_match('/^[a-zA-Z0-9\/]+$/', $data['apiurl']) == false) {
 			return $this->addMessage('Only letters, numbers and slashes are allowed in the api url', 'error');
 		}

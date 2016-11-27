@@ -16,11 +16,11 @@
  	CONST FOOTER = 'footer';
 
  	public function render($view, Helper $helper, $data = array(), $api = false, $header = false, $footer = false) {
- 		if ($api !== false) {
+ 		if ($api === false) {
  			$headerPath = $this->_setHeader($header);
  		}
  		$viewPath = $this->_setView($view);
- 		if ($api !== false) {
+ 		if ($api === false) {
 	 		$footerPath = $this->_setFooter($footer);
 	 	}
 
@@ -29,11 +29,11 @@
  		}
 
 		ob_start();
-		if ($api !== false) {
+		if ($api === false) {
 			include($headerPath);
 		}
 		include($viewPath);
-		if ($api !== false) {
+		if ($api === false) {
 			include($footerPath);
 		}
 		$content = ob_get_contents();
